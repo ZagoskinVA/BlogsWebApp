@@ -1,0 +1,120 @@
+@model TestPostgrasql.Models.Blog;
+@{
+	if(ViewBag.IsAuthorize != null && ViewBag.IsAuthorize )
+		Layout = "_AuthorizeLayout";
+		ViewData["Title"] = Model.Title;
+	var picture = Model.Picture == null ? null : Convert.ToBase64String(Model.Picture);
+	var str = "data:image/gif;base64," + picture;
+}
+<!DOCTYPE html>
+<html>
+<body>
+    <div>
+        <h1>@Model.Title</h1>
+        <div class="rating">Рейтинг - @Model.Rating </div>
+    </div>
+    <div>
+        @Model.Text
+    </div>
+    @if (ViewBag.IsAuthorize != null && ViewBag.CurrentUserId != null && ViewBag.IsAuthorize &&
+       ViewBag.CurrentUserId == Model.UserId)
+    {
+<form asp-controller="Blog" asp-action="EditBlog" asp-route-id="@Model.BlogId" method="get">
+    <button type="sumbit">Редактировать</button>
+</form>}
+    @if (picture != null)
+    {
+<div class="row image">
+    <img src="@str" />
+    @if (ViewBag.IsAuthorize != null && ViewBag.CurrentUserId != null && ViewBag.IsAuthorize &&
+           ViewBag.CurrentUserId == Model.UserId)
+    {
+<button type="button" class="btn remove-img">Удалить картинку</button>}
+</div>}
+
+    @if(ViewBag.IsAuthorize != null && ViewBag.IsAuthorize)
+    {
+        <button type="button" class="btn btn-primary btn-sm like">
+            Like
+        </button>
+    }
+
+    <h2>Комментарии</h2>
+    @if (ViewBag.IsAuthorize != null && ViewBag.IsAuthorize)
+    {
+<div>
+    <form method="post" asp-controller="Comment" asp-action="CreateComment">
+        <textarea name="text"></textarea>
+        <input type="hidden" name="userId" value="@ViewBag.CurrentUserId">
+        <input type="hidden" name="blogId" value="@Model.BlogId">
+        <button type="sumbit">Добавить</button>
+    </form>
+</div>}
+    @if (Model.Comments != null)
+    {
+<div>
+    @foreach (var coment in @Model.Comments)
+    {
+<h5>@coment.User.NickName</h5>
+                    <div>
+                        @coment.Text
+                    </div>
+                                        @if (ViewBag.IsAuthorize != null && ViewBag.CurrentUserId != null &&
+                                           ViewBag.IsAuthorize && (coment.UserId == ViewBag.CurrentUserId ||
+                                           ViewBag.CurrentUserId == Model.UserId))
+                                        {
+                    <div>
+                        <form method="post" asp-controller="Comment" asp-action="RemoveComment" asp-route-id="@coment.CommentId">
+                            <input type="hidden" name="blogId" value="@Model.BlogId">
+                            <button type="sumbit">Удалить</button>
+                        </form>
+                    </div>}}
+</div>}
+
+
+
+</body>
+</html>
+<script src="~/lib/jquery/dist/jquery-3.3.1.js"></script>
+<script>
+$('.like').click(function()
+{
+	var blog = '@(Model.BlogId)'
+	$.ajax(
+		{
+			type:"POST",
+			url:'/Blog/SetLike',
+			data:
+			{
+				blogId: blog
+			},
+			async: true,
+			cache: false,
+			success: function(data)
+			{
+				$('.rating').text('Рейтинг - ' + data['rating']);
+			}
+		});
+});
+
+	$('.remove-img').click(function ()
+	{
+		var blogId = '@Model.BlogId';
+		$.ajax(
+			{
+				type: "POST",
+				url: '/Blog/RemovePicture',
+				async: true,
+				cache: false,
+				data:
+				{
+					blogId: blogId
+				},
+				success: function (data)
+				{
+					$('.image').empty();
+				}
+			});
+	});
+
+</script>

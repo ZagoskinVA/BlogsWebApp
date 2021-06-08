@@ -1,0 +1,16 @@
+@model TestPostgrasql.Models.Category;
+@{
+	Layout = "_AuthorizeLayout";
+	ViewData["Title"] = "Добавить категорию";
+}
+<form method="POST">
+    	<div asp-validation-summary="ModelOnly"></div>
+		<div>
+			<label asp-for="Name"></label>
+			<input asp-for="Name"/>
+			<span asp-validation-for="Name"></span>
+		</div>
+        <div>
+			<button type="sumbit">Создать</button>
+		</div>
+</form>

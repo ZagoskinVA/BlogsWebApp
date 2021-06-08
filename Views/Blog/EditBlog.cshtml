@@ -1,0 +1,31 @@
+@model TestPostgrasql.Models.Blog;
+@{
+	Layout = "_AuthorizeLayout";
+	ViewData["Title"] = "Редактирование блога";
+}
+
+
+<form method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="Title"></label>
+        <input asp-for="Title" value="@Model.Title" />
+        <span asp-validation-for="Title"></span>
+    </div>
+    <div>
+        <label asp-for="Text"></label>
+        <textarea asp-for="Text" value="@Model.Text"></textarea>
+        <span asp-validation-for="Text"></span>
+        <input type="hidden" asp-for="@Model.BlogId" value="@Model.BlogId" />
+        <input type="hidden" asp-for="@Model.UserId" value="@Model.UserId" />
+        <input type="hidden" asp-for="@Model.Rating" value="@Model.Rating" />
+
+    </div>
+    <div>
+        <input type="file" accept="jpg, png, jpeg" name="file" />
+    </div>
+
+    <div>
+        <button type="sumbit">Редактировать</button>
+    </div>
+</form>

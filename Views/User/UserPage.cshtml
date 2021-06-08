@@ -1,0 +1,32 @@
+@model TestPostgrasql.Models.User;
+@{
+	Layout = "_AuthorizeLayout";
+	ViewData["Title"] = Model.NickName;
+}
+	<div>Ваш NickName - @Model.NickName</div>
+	<div>Ваш Email - @Model.Email</div>
+	<div>Ваши блоги</div>
+	<div>
+		@if(@Model.Blogs != null)
+		{
+			@foreach(var blog in Model.Blogs)
+			{
+				<div>
+					<a asp-controller="Blog" asp-action="OpenBlog" asp-route-id="@blog.BlogId">@blog.Title </a>
+
+					<form method="post" asp-action="RemoveBlog" asp-controller="Blog">
+						<input type="hidden" name="BlogId" value="@blog.BlogId"/>
+						<button type="sumbit">Удалить блог</button>
+					</form>
+				</div>
+			}
+		}
+	</div>
+	<form  method="get" asp-action="CreateBlog" asp-controller="Blog">
+		<button type="sumbit"  >Создать Блог</button>
+	</form>
+	@if(ViewBag.IsAdmin || ViewBag.IsModerator)
+	{
+		<a asp-controller="User" asp-action="ControlUsers">Управление пользователями</a>
+		<a asp-action="AddCategory" asp-controller="Blog">Добавить категорию</a>
+	}

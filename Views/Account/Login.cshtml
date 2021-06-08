@@ -1,0 +1,30 @@
+@model TestPostgrasql.Models.LoginModel
+@{
+	ViewData["Title"] = "Вход";	
+}
+
+	<form method="post">
+	<div asp-validation-summary="ModelOnly"></div>
+		<div>
+			<label asp-for="Email"></label>
+			<input asp-for="Email"/>
+			<span asp-validation-for="Email"></span>
+		</div>
+		<div>
+			<label asp-for="Password"></label>
+			<input asp-for="Password"/>
+			<span asp-validation-for="Password"></span>
+		</div>
+		<div>
+			<label asp-for="Remember"></label>
+			<input type="checkbox" asp-for="Remember">
+			<span asp-validation-for="Remember"></span>
+		</div>
+		<div>
+			<button type="sumbit">Войти</button>
+		</div>
+		<div>
+			<a asp-controller="Account" asp-action="ResetPassword">Забыли пароль ?</a>
+		</div>
+		
+	</form>

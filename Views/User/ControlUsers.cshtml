@@ -1,0 +1,27 @@
+@model IEnumerable<TestPostgrasql.Models.User>;
+@{
+	Layout = "_AuthorizeLayout";
+	ViewData["Title"] = "Управлениями пользователями";
+}
+<div>
+	@foreach (var user in Model)
+	{
+		<div>
+			@user.Email
+			@foreach (var role in user.Roles)
+			{
+				<div>
+					@role
+				</div>
+			}
+			<form asp-controller="User" asp-action="DeleteUser" method="post">
+				<input type="hidden" name="id" value="@user.Id"/>
+				<button type="submit">Удалить</button>
+			</form>
+			<form asp-controller="User" asp-action="ChangeRole" method="post">
+				<input type="hidden" name="id" value="@user.Id"/>
+				<button type="submit">Изменить роль</button>
+			</form>
+		</div>
+	}
+</div>

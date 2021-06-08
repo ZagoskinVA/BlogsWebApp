@@ -1,0 +1,31 @@
+@model TestPostgrasql.Models.RegisterModel
+@{
+	ViewData["Title"] = "Регистрация";
+}
+
+	<form method="post">
+	<div asp-validation-summary="ModelOnly"></div>
+		<div>
+			<label asp-for="NickName"></label>
+			<input asp-for="NickName"/>
+			<span asp-validation-for="NickName"></span>
+		</div>
+		<div>
+			<label asp-for="Email"></label>
+			<input asp-for="Email"/>
+			<span asp-validation-for="Email"></span>
+		</div>
+		<div>
+			<label asp-for="Password"></label>
+			<input asp-for="Password"/>
+			<span asp-validation-for="Password"></span>
+		</div>
+		<div>
+			<label asp-for="ConfirmationPassword"></label>
+			<input asp-for="ConfirmationPassword"/>
+			<span asp-validation-for="ConfirmationPassword"></span>
+		</div>
+		<div>
+			<button type="sumbit">Зарегистрироваться</button>
+		</div>	
+	</form>

@@ -1,0 +1,33 @@
+@model TestPostgrasql.Models.Blog;
+@{ Layout = "_AuthorizeLayout";
+                ViewData["Title"] = "Создать Блог"; }
+<form method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="Title"></label>
+        <input asp-for="Title" />
+        <span asp-validation-for="Title"></span>
+    </div>
+    <div>
+        <label asp-for="Text"></label>
+        <textarea asp-for="Text"></textarea>
+        <span asp-validation-for="Text"></span>
+    </div>
+    <div>
+        @foreach (var category in ViewBag.Categories)
+        {
+<div>
+    <input type="radio" name="categoryName" value="@category.Name" />@category.Name
+</div>}
+    </div>
+    <div>
+        <input class="picture" type="file" accept="jpg, png, jpeg" name="file" onchange="readFile(this)" />
+    </div>
+
+    <button type="sumbit">Создать</button>
+    </div>
+
+</form>
+
+
+

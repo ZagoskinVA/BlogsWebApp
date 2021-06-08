@@ -1,0 +1,132 @@
+﻿@model BlogsWebAplication.Models.BlogsViewModel;
+@{
+
+
+	if(ViewBag.IsAuthorize != null && ViewBag.IsAuthorize )
+		Layout = "_BlogsLayoutAuthorize";
+    ViewData["Title"] = "Главная страница";
+	var pages = Model.Blogs;
+}
+
+
+<div class="input-group input-group-sm mb-3">
+    <select class="category input-group-prepend">
+        <option value="0">Все категории</option>
+        @foreach (var item in ViewBag.Categories)
+            {
+        <option value="@item.CategoryId">@item.Name</option>
+            }
+    </select>
+
+    <input type="text" class="form-control search-line" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary input-group-text search" id="basic-addon2">Seacrch</button>
+    </div>
+</div>
+
+
+<div class="main container" style="margin-left: 150px">
+
+    @foreach(var blog in Model.Blogs)
+	{
+    <div>
+        <a asp-controller="Blog" asp-action="OpenBlog" asp-route-id="@blog.BlogId">@blog.Title.</a> Автор - @blog.UserName.
+    </div>
+	}
+
+    <div id="pages-container"></div>
+
+</div>
+
+<script src="~/lib/jquery/dist/jquery-3.3.1.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript" src="~/js/menu.js"></script>
+<script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-grid.css" />
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+<script type="text/javascript">
+    $('.search').click(function () {
+        var categoryId = $('.category').val();
+        var line = $('.search-line').val();
+        $.ajax(
+            {
+                type: "POST",
+                url: "Home/Search",
+                data:
+                {
+                    searchLine: line,
+                    categoryId: categoryId
+                },
+                async: true,
+                cache: false,
+                success: function (data) {
+                    $('.main').empty();
+                    $.each(data['blogs'], function (index, element) {
+                        var id = element['blogId']
+                        var title = element['title']
+                        var author = element['userName']
+                        var elm = '<div> <a href="Blog/OpenBlog/' + id + '">' + title + '</a> Автор - ' + author + ' </div> ';
+                        $('.main').append(elm);
+                    });
+                    var elm = '<div id="pages-container" ></div>';
+                    $('.main').append(elm);
+                    addPages(data['paggingInfo']);
+
+
+                }
+            })
+    });
+
+    /*
+    $('button.page').click(function () {
+        
+
+    });*/
+
+    $(document).ready(function () {
+        
+        var pageInfo = @Html.Raw(Json.Serialize(Model.PaggingInfo));
+        addPages(pageInfo);
+    });
+
+function addPages(data) {
+    var categoryId = $('.category').val();
+    var line = $('.search-line').val();
+    for (i = 1; i <= data['totalPages']; i++) {
+        var elm = '<button class="page" id="' + i + '" >' + i + '</button>';
+        $('#pages-container').append(elm);
+
+    }
+    $('.page').on('click', function () {
+        $.ajax(
+            {
+                type: "POST",
+                url: "Home/Search",
+                dataType: 'json',
+                data:
+                {
+                    searchLine: line,
+                    categoryId: categoryId,
+                    productPage: $(this).attr('id')
+                },
+                async: true,
+                cache: false,
+                success: function (data) {
+                    $('.main').empty();
+                    $.each(data['blogs'], function (index, element) {
+                        var id = element['blogId']
+                        var title = element['title']
+                        var author = element['userName']
+                        var elm = '<div> <a href="Blog/OpenBlog/' + id + '">' + title + '</a> Автор - ' + author + ' </div> ';
+                        $('.main').append(elm);
+                    });
+                    var elm = '<div id="pages-container" ></div>';
+                    $('.main').append(elm);
+                    addPages(data['paggingInfo']);
+                },
+            })
+    });
+}
+
+</script>
